@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Chatbot</title>
+    <style>
+        /* Chatbot icon and container styles */
+        .chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #38d39f;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .chatbot-icon img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #chatbox {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .user-message,
+        .bot-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #e0e0e0;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #38d39f;
+            color: #fff;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: calc(100% - 60px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border: 2px solid black;
+            background-color: #38d39f;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 45px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+               }
+
+        button:hover {
+            background-color: #32be8f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chatbot Icon -->
+    <div class="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png" alt="Chatbot Icon">
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chat-container">
+        <div id="chatbox">
+            <div class="bot-message">Welcome! Ask me anything about Vehicle or Property Insurance.</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const faqData = {
+            vehicle: [
+                {
+                    question: "how do i file a vehicle insurance claim",
+                    answer: "You can file a claim by providing details of the incident, uploading required documents, and following the prompts in the application."
+                },
+                {
+                    question: "what types of damages are covered under my vehicle insurance policy",
+                    answer: "Coverage typically includes damages from accidents, theft, fire, natural disasters, and vandalism. Check your policy for specific details."
+                },
+                // Add other vehicle insurance FAQs here
+            ],
+            property: [
+                {
+                    question: "how do i file a property insurance claim",
+                    answer: "To file a claim, provide details about the damage, upload necessary documents, and follow the guided steps in the application."
+                },
+                {
+                    question: "what types of damages are covered under my property insurance policy",
+                    answer: "Coverage typically includes damages from fire, theft, natural disasters, water damage, and vandalism. Refer to your policy for specific coverage."
+                },
+                // Add other property insurance FAQs here
+            ]
+        };
+
+        function toggleChat() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' || chatContainer.style.display === '' ? 'flex' : 'none';
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value.trim().toLowerCase();
+            if (userInput === '') return;
+
+            const chatbox = document.getElementById('chatbox');
+
+            // Display user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'user-message';
+            userMessage.textContent = userInput;
+            chatbox.appendChild(userMessage);
+
+            // Get bot response
+            const botResponse = getBotResponse(userInput);
+            const botMessage = document.createElement('div');
+            botMessage.className = 'bot-message';
+            botMessage.textContent = botResponse;
+            chatbox.appendChild(botMessage);
+
+            // Clear input
+            document.getElementById('user-input').value = '';
+
+            // Scroll to the bottom of the chatbox
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function getBotResponse(input) {
+            const category = input.includes('vehicle') ? 'vehicle' : input.includes('property') ? 'property' : null;
+
+            if (category) {
+                const faq = faqData[category].find(f => input.includes(f.question));
+                return faq ? faq.answer : "I'm sorry, I don't have an answer for that.";
+            } else {
+                return "Please specify whether your question is about 'vehicle' or 'property' insurance.";
+            }
+        }
+    </script>
+</body>
+</html>
